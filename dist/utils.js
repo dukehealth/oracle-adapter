@@ -235,7 +235,7 @@ utils.sqlTypeCast = function (type) {
     case 'text':
     case 'mediumtext':
     case 'longtext':
-      return 'VARCHAR2(255)';
+      return 'STRING';
 
     case 'boolean':
     case 'int':
@@ -258,11 +258,11 @@ utils.sqlTypeCast = function (type) {
       return 'DATE';
 
     case 'binary':
-      return 'VARCHAR2(3000)';
+      return 'STRING';
 
     default:
       console.error("Unregistered type given: " + type);
-      return "VARCHAR2(255)";
+      return "STRING";
   }
 };
 
@@ -291,7 +291,8 @@ utils.getReturningData = function (definition) {
   return _.reduce(definition, function (memo, attributes, field) {
     memo.params.push({
       type: _oracledb2['default'][utils.sqlTypeCast(attributes.type)],
-      dir: _oracledb2['default'].BIND_OUT
+      dir: _oracledb2['default'].BIND_OUT,
+      maxSize: attributes.size || 200
     });
     memo.fields.push('"' + field + '"');
     memo.outfields.push(':' + field);
